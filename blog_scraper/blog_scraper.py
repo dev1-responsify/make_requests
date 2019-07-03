@@ -13,9 +13,11 @@ soup = BeautifulSoup(response.text, 'html.parser')
 posts = soup.find_all(class_="type-blogteaser-standard-headline text-center responsify-serif")
 
 
-links = soup.find_all('a')
-for link in links:
-    print(link.text)
+link = soup.find_all('a')
+
+
+for link in soup.find_all('a'):
+    print(link.get('href'))
 
 for post in posts:
     print(post.text)
