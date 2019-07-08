@@ -2,7 +2,7 @@ from bs4 import BeautifulSoup
 import requests
 # from csv import writer
 
-response = requests.get("https://www.responsify.com/blog/")
+response = requests.get("https://www.techcrunch.com")
 
 soup = BeautifulSoup(response.text, 'html.parser')  
 
@@ -19,13 +19,29 @@ posts = soup.find_all(class_="type-blogteaser-standard-headline text-center resp
 
 links = [a.get('href') for a in soup.find_all('a', href=True)]
 print(links)
-
-# linklist = []
-# for link in soup.find_all('a'):
-#     print(link.get('href'))
     
 
-for post in posts:
-    print(post.text)
-    # csv_writer.writerow([link])
 
+blogpost = links[0]
+blogrequest = requests.get(blogpost)
+# print(blogrequest.text)
+
+soup_two = BeautifulSoup(blogrequest.text, 'html.parser') 
+
+
+if blogrequest.status_code == 200:
+    print('Success!')
+elif blog_request.status_code == 404:
+    print('Not Found.')
+
+word_count = soup_two.find_all('p')
+store = ""
+for n in word_count:
+    print(n.get_text())
+    store += n.get_text()
+
+word = 'char count = '
+
+print(word + str(len(store)))
+
+    
