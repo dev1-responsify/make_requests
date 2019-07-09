@@ -1,17 +1,17 @@
 from bs4 import BeautifulSoup
 import requests
 
-
+#getting requests from a certain website and integrating beautiful soup
 response = requests.get("http://blogs.reuters.com/")
 soup = BeautifulSoup(response.text, 'html.parser')
+#for loop to find all the a href links
 links = [a.get('href') for a in soup.find_all('a', href=True)]  
 
-# posts = soup.find_all(class_="type-blogteaser-standard-headline text-center responsify-serif")
 
 #Finding words based on the blog post count
 def find_words():
 
-    #
+    
     bloglist = links[0]
     blogrequest = requests.get(bloglist)
     
