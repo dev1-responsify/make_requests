@@ -33,8 +33,6 @@ def get_num_of_words(soup_two):
 
 # Finding words based on the blog post count
 def find_words():
-
-    #
     bloglist = links[0]
     blogrequest = requests.get(bloglist)
     
