@@ -2,75 +2,70 @@ from bs4 import BeautifulSoup
 import requests
 import lxml.html
 import requests
+import pandas as pd
+from io import StringIO
+
+# make a csv file
+def make_csv(csv_file, lst):
+    df = pd.read_csv(csv_file)
+    df['result'] = lst
+    df.to_csv('output.csv')
+
+def df_creation(fileString):
+    # temp = StringIO(fileString)
+    df = pd.read_csv(fileString)
+    return df['Root_Domain'].to_list()
 
 # checks if url has blogs in the url
 def check_url(url):
     print('in url: ', url)
-    url1 = url + "blog"
-    url2 = url + 'tag/blog'
-    url3 = url + 'blogs'
+    url1 = url + "/blog"
+    url2 = url + '/tag/blog'
+    url3 = url + '/blogs'
     try:
-        response = requests.get(url1,  headers={'User-Agent': 'Mozilla/5.0'}, timeout=10)
-        if response.status_code == 200: return url1
-    except:pass
-    try:
-        response2 = requests.get(url2,  headers={'User-Agent': 'Mozilla/5.0'}, timeout=10)
-        if response2.status_code == 200: return url2
-    except: pass
-    try:
-        response3 = requests.get(url3, headers={'User-Agent': 'Mozilla/5.0'}, timeout=10)
-        if response3.status_code == 200: return url3
-    except: pass
+        requests.get(url, headers={'User-Agent': 'Mozilla/5.0'}, timeout=10)
+    except Exception as e:
+        print(e)
+        return 'N/A' # timeout or error so return N/A since site not accessible
+    response = requests.get(url1, headers={'User-Agent': 'Mozilla/5.0'})
+    if response.status_code == 200: return url1
+    response2 = requests.get(url2,  headers={'User-Agent': 'Mozilla/5.0'})
+    if response2.status_code == 200: return url2
+    response3 = requests.get(url3, headers={'User-Agent': 'Mozilla/5.0'})
+    if response3.status_code == 200: return url3
 
     # if link is already the blog- check title to see if blog in name
-    try:
-        response4 = BeautifulSoup(requests.get(url, headers={'User-Agent': 'Mozilla/5.0'}, timeout=10).text, 'html.parser')
-        for i in response4.find_all("title"):
-            if 'blog' in i.text.lower(): return url
-    except: pass
-    # try:
-    #     url4 = 'https://' + 'blogs.' + url.split("/")[-2] # https://blogs.random.com
-    #     response4 = requests.get(url4, headers={'User-Agent': 'Mozilla/5.0'})
-    #     if response4.status_code == 200: return url4
-    # except: pass
+    response4 = BeautifulSoup(requests.get(url, headers={'User-Agent': 'Mozilla/5.0'}).text, 'html.parser')
+    for i in response4.find_all("title"):
+        if 'blog' in i.text.lower(): return url
 
-    return None
+    return 'N/A'
 
 def scrapper(url_lst):
     lst = []
+
     for url in url_lst:
+        url = 'https://' + url
         print('testing: ', url, '---------------------------')
-        if 'html' in url.split('/')[-1].lower():
-            print(url)
-            res = None
-        elif 'blog' in url.split('/')[-1].lower(): # if blog is already there, e.g., www.innocentdrinks.co.uk/blog
+        if 'blog' in url.split('/')[-1].lower(): # if blog is already there, e.g., www.innocentdrinks.co.uk/blog
             res = url
         else:
-            res = check_url(url)
+            try: res = check_url(url)
+            except Exception as e:
+                res = 'error'
+                print(e)
         lst.append(res)
     return lst
 
+def main():
+    company_lst = df_creation('top500Domains.csv')
+    print(company_lst)
+    res_lst = scrapper(company_lst)
+    print(res_lst)
+    make_csv('top500Domains.csv', res_lst)
+    print('done')
 
-# lst = ['https://www.doyouyoga.com/', 'https://www.reuters.com/', 'https://www.blogilates.com/', 'https://www.houzz.com/',
-#        'https://www.100daysofrealfood.com/', 'https://inhabitat.com/', 'https://pando.com/', 'https://iso.500px.com/',
-#        'https://www.innocentdrinks.co.uk/blog']
-lst = ['http://www.datasciencecentral.com/', 'http://www.datatau.com/', 'https://www.kdnuggets.com/news/index.html',
-       'https://www.reddit.com/r/datascience/', 'https://news.google.com/news/section?q=data%20science',
-       'https://www.analyticsvidhya.com/blog/', 'https://www.datacamp.com/community/blog', 'http://chrisalbon.com/',
-       'http://blog.yhat.com/', 'http://101.datascience.community/', 'https://datascience.nih.gov/blog',
-       'https://blog.mailchimp.com/tag/data-science/', 'http://datascience.ibm.com/blog/',
-       'https://datascience.berkeley.edu/blog/', 'http://cds.nyu.edu/news/',
-       'http://compbio.ucsd.edu/outreach/data-science-blog/', 'http://blog.kaggle.com/category/data-science-news/',
-       'https://dssg.uchicago.edu/blog/', 'https://www.codementor.io/data-science/tutorial',
-       'http://datasciencedegree.wisconsin.edu/blog/']
-
-# link = 'https://designformankind.com/blog/'
-# soup =  BeautifulSoup(requests.get(link, headers={'User-Agent': 'Mozilla/5.0'}).text)
-# print(soup.prettify())
-x = scrapper(lst)
-# x = check_url('https://iso.500px.com/')
-print(x)
-
+main()
 
 
 
