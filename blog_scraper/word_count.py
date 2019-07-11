@@ -9,6 +9,14 @@ links = [a.get('href') for a in soup.find_all('a', href=True)]
 for i in links: print(i)
 # posts = soup.find_all(class_="type-blogteaser-standard-headline text-center responsify-serif")
 
+# checks if url has blogs in the url
+def check_url(url):
+    url += 'blogs'
+    response = requests.get(url)
+    if response.status_code != 200:
+        return 'error'
+    return url
+
 # returns the number of words in the blog 
 # includes some extra stuff like title of next and previous post
 def get_num_of_words(soup_two):
