@@ -18,10 +18,10 @@ def make_req(url):
         
         # pprint(x)
         # print(x['title'])
-        print(x['objects'][0]['author'])
-        print(x['objects'][0]['images'])
-        print(x['objects'][0]['title'])
-        print(x['objects'][0]['text'])
+        # print(x['objects'][0]['author'])
+        # print(x['objects'][0]['images'])
+        # print(x['objects'][0]['title'])
+        # print(x['objects'][0]['text'])
         return response.json()
        
     else:
@@ -29,9 +29,13 @@ def make_req(url):
 
 def count_words(text):
     lst = text.split()
-    print(lst)
+    return len(lst)
 
 def main():
-    obj = 
+    obj = make_req('https://www.responsify.com/convert-meaning/')
+    words = count_words(obj['objects'][0]['text'])
+    print('title:', obj['objects'][0]['title'])
+    print('author:', obj['objects'][0]['author'])
+    print('num words:', words)
 
-make_req('https://www.responsify.com/convert-meaning/')
+main()
