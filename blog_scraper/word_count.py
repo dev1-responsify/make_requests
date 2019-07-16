@@ -1,7 +1,15 @@
 from bs4 import BeautifulSoup
 import requests
 
-<<<<<<< HEAD
+# EX: http://blogs.reuters.com/
+# gets the www. part and check if it is blogs or blog
+# returns true if it is
+def has_blog(a_tag):
+    start = a_tag['href'].split('/')[2].split('.')[0]
+    if start == 'blog' or start == 'blogs': return True
+    return False
+
+
 '''
 get_links return a lst of all the relevant links 
 only works if it has /blog or /blogs next to its domain name
@@ -15,9 +23,17 @@ def get_links(keyword, response):
     soup = BeautifulSoup(response.text, 'html.parser')
     blog_links = set() # set so no duplicates
     next_page_lst = set()
+    print(response.url)
+
     for a in soup.find_all('a', href=True):
         try:
-            if keyword in a['href'].split('/')[3].lower(): # has /blog or /blogs
+            print(a['href'])
+            is_blog = has_blog(a)
+            if is_blog: 
+                blog_links.add(a['href'])
+            elif '/' in a['href'][0]: 
+                blog_links.add(response.url + a['href'])
+            elif keyword in a['href'].split('/')[3].lower(): # has /blog or /blogs or blog in www. part
                 try: # has something after the /blog
                     if 'page' in a['href'].split('/')[4].lower(): # get next_page
                         next_page_lst.add(a['href'])
@@ -28,29 +44,19 @@ def get_links(keyword, response):
                                 add = False
                                 break 
                         if add: blog_links.add(a['href'])  # get link to a blog
-                except Exception as e: print(4, e, a['href'])
-        except Exception as e: print(3, e, a['href'])
+                except Exception as e: pass #print(4, e, a['href'])
+        except Exception as e: pass #print(3, e, a['href'])
 
     for i in blog_links: print(i)
     return blog_links
 
-=======
-<<<<<<< HEAD
-#getting requests from a certain website and integrating beautiful soup
-response = requests.get("http://blogs.reuters.com/")
-soup = BeautifulSoup(response.text, 'html.parser')
-#for loop to find all the a href links
-links = [a.get('href') for a in soup.find_all('a', href=True)]  
 
-=======
-
+# #getting requests from a certain website and integrating beautiful soup
 # response = requests.get("http://blogs.reuters.com/")
-response = requests.get("https://www.afterellen.com/")
-soup = BeautifulSoup(response.text, 'html.parser')
-links = [a.get('href') for a in soup.find_all('a', href=True)] 
-for i in links: print(i)
-# posts = soup.find_all(class_="type-blogteaser-standard-headline text-center responsify-serif")
->>>>>>> 2fa646d3632e7e9a3031c6b634de5ba8dd910cfb
+# soup = BeautifulSoup(response.text, 'html.parser')
+# #for loop to find all the a href links
+# links = [a.get('href') for a in soup.find_all('a', href=True)]  
+# print(links)
 
 # checks if url has blogs in the url
 def check_url(url):
@@ -60,7 +66,6 @@ def check_url(url):
         return 'error'
     return urls
 
->>>>>>> 343de935222f87045ae3b0829cb6c588ce822db7
 # returns the number of words in the blog 
 # includes some extra stuff like title of next and previous post
 def get_num_of_words(soup_two):
@@ -81,7 +86,7 @@ def get_num_of_words(soup_two):
     print(store)
     word_count = str(len(store.split()))
     print ("word count = " + word_count)
-<<<<<<< HEAD
+
     return word_count
 
 # Finding words based on the blog post count
@@ -93,26 +98,12 @@ def find_words(link_lst):
             response = requests.get(link, headers={'User-Agent': 'Mozilla/5.0'}, timeout=10)
             soup = BeautifulSoup(response.text, 'html.parser')
             num_words =  get_num_of_words(soup) 
-<<<<<<< HEAD
             lst.append((num_words, link))
         except Exception as e:
             lst.append(('N/A', link))
-=======
-            lst.append(num_words, link)
-        except Exception as e:
-            lst.append('N/A', link)
->>>>>>> ef801acd69708f53f23d9cb099d8321301dd087e
             print(e)
     return lst
-=======
-
-<<<<<<< HEAD
     
-=======
-
-# Finding words based on the blog post count
-def find_words():
->>>>>>> 2fa646d3632e7e9a3031c6b634de5ba8dd910cfb
     bloglist = links[0]
     blogrequest = requests.get(bloglist)
     
@@ -126,14 +117,13 @@ def find_words():
     get_num_of_words(soup_two)
     
             
-        
+
+# find_words(['http://blogs.reuters.com/'])
     
-    
+
 
 # find_words()
 
-
->>>>>>> 343de935222f87045ae3b0829cb6c588ce822db7
 
 # x = get_links('blog', requests.get("http://360alumni.com/blog"))
 # print(x)
