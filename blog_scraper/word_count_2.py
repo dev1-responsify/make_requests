@@ -32,6 +32,6 @@ def count_words(text):
     print(lst)
 
 def main():
-    
+    obj = 
 
 make_req('https://www.responsify.com/convert-meaning/')
