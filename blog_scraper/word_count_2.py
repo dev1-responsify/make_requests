@@ -16,12 +16,6 @@ def make_req(url):
         print('Success!')
         x = response.json()
         
-        # pprint(x)
-        # print(x['title'])
-        # print(x['objects'][0]['author'])
-        # print(x['objects'][0]['images'])
-        # print(x['objects'][0]['title'])
-        # print(x['objects'][0]['text'])
         return response.json()
        
     else:
@@ -31,11 +25,17 @@ def count_words(text):
     lst = text.split()
     return len(lst)
 
+# returns the information from the obj in the api
+def get_info(res, obj):
+    try: return obj['objects'][0][res]
+    except: return 'object does not exist'
+
 def main():
-    obj = make_req('https://www.responsify.com/convert-meaning/')
+    obj = make_req('https://www.responsify.com/blog/')
     words = count_words(obj['objects'][0]['text'])
-    print('title:', obj['objects'][0]['title'])
-    print('author:', obj['objects'][0]['author'])
-    print('num words:', words)
+    print('title:', get_info('title', obj))
+    print('author:', get_info('author', obj))
+    print('html:', get_info('html', obj))
+    # print('num words:', words)
 
 main()
