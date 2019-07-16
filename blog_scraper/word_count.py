@@ -64,9 +64,15 @@ def find_words(link_lst):
             response = requests.get(link, headers={'User-Agent': 'Mozilla/5.0'}, timeout=10)
             soup = BeautifulSoup(response.text, 'html.parser')
             num_words =  get_num_of_words(soup) 
+<<<<<<< HEAD
             lst.append((num_words, link))
         except Exception as e:
             lst.append(('N/A', link))
+=======
+            lst.append(num_words, link)
+        except Exception as e:
+            lst.append('N/A', link)
+>>>>>>> ef801acd69708f53f23d9cb099d8321301dd087e
             print(e)
     return lst
 
